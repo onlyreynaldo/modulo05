@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
-
 import { FaGithubAlt, FaPlus } from 'react-icons/fa';
 
-import { Container, Form, SubmitButton } from './styles';
+import api from '../../services/api';
+
+import { Container, Form, SubmitButton, List } from './styles';
 
 export default class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
       newRepo: '',
+      repositories: [],
+      loading: false,
     };
   }
 
@@ -16,14 +19,28 @@ export default class Main extends Component {
     this.setState({ newRepo: e.target.value });
   };
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
 
-    // console.log(this.state.newRepo);
+    this.setState({ loading: true });
+
+    const { newRepo, repositories } = this.state;
+
+    const response = await api.get(`/repos/${newRepo}`);
+
+    const data = {
+      name: response.data.full_name,
+    };
+
+    this.setState({
+      repositories: [...repositories, data],
+      newRepo: '',
+      loading: false,
+    });
   };
 
   render() {
-    const { newRepo } = this.state;
+    const { newRepo, loading } = this.state;
     return (
       <Container>
         <h1>
@@ -38,10 +55,12 @@ export default class Main extends Component {
             value={newRepo}
             onChange={this.handleInputChange}
           />
-          <SubmitButton>
+          <SubmitButton loading={loading}>
             <FaPlus color="#fff" size={14} />
           </SubmitButton>
         </Form>
+
+        <List />
       </Container>
     );
   }
