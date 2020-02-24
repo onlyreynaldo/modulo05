@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FaGithubAlt, FaPlus } from 'react-icons/fa';
+import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
 
 import api from '../../services/api';
 
@@ -55,11 +55,16 @@ export default class Main extends Component {
             value={newRepo}
             onChange={this.handleInputChange}
           />
-          <SubmitButton loading={loading}>
-            <FaPlus color="#fff" size={14} />
+          <SubmitButton loading={loading ? 1 : 0}>
+            {loading ? (
+              <FaSpinner color="#fff" size={14} />
+            ) : (
+              <FaPlus color="#fff" size={14} />
+            )}
           </SubmitButton>
         </Form>
 
+        <FaSpinner color="#fff" size={14} />
         <List />
       </Container>
     );
